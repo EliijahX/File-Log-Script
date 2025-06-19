@@ -1,0 +1,46 @@
+import re
+
+def ip_result(file_path, output_path):
+    ip_counts = {}
+    with open(file_path, "r") as f:
+        for line in f:
+            match = re.search(r"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b", line)
+            if match:
+                ip = match.group(0)
+                ip_counts[ip] = ip_counts.get(ip, 0) + 1
+
+    with open(output_path, "w") as f:
+        for ip, count in sorted(ip_counts.items()):
+            f.write(f"IP: {ip}, Count: {count}\n")
+    print("Results written to:", output_path)
+
+def invalid_user_count(file_path, output_path):
+    user_counts = {}
+    with open(file_path, "r") as f:
+        for line in f:
+            if "Invalid user" in line:
+                user_counts["Invalid user"] = user_counts.get("Invalid user", 0) + 1
+
+    with open(output_path, "w") as f:
+        for user, count in sorted(user_counts.items()):
+            f.write(f"{user}: {count}\n")
+    print("Results written to:", output_path)
+
+def failed_logins(file_path, output_path):
+    login_counts = {}
+    with open(file_path, "r") as f:
+        for line in f:
+            match = re.search(r"Failed password for (\S+)", line)
+            if match:
+                user = match.group(1)
+                login_counts[user] = login_counts.get(user, 0) + 1
+
+    with open(output_path, "w") as f:
+        for user, count in sorted(login_counts.items()):
+            f.write(f"{user}: {count}\n")
+    print("Results written to:", output_path)
+
+# Run the functions
+ip_result("exam.log", "max.txt")
+invalid_user_count("exam.log", "invalid_users_output.txt")
+failed_logins("exam.log", "failed_logins_output.txt")
